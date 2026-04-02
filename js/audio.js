@@ -9,6 +9,19 @@ class AudioManager {
         this.bgmVolume = 0.3;
         this.bgmPlaylist = null;
         this.bgmIndex = 0;
+        this.userInteracted = false;
+        this.pendingBgm = null;
+    }
+
+    requireInteraction() {
+        if (!this.userInteracted) {
+            this.userInteracted = true;
+            if (this.pendingBgm) {
+                const pending = this.pendingBgm;
+                this.pendingBgm = null;
+                this.playBgm(pending, true);
+            }
+        }
     }
 
     async init() {
@@ -42,6 +55,11 @@ class AudioManager {
 
     playBgm(type, force = false) {
         if (this.muted && !force) return;
+
+        if (!this.userInteracted && !force) {
+            this.pendingBgm = type;
+            return;
+        }
 
         if (this.currentBgm === type && !force) return;
 

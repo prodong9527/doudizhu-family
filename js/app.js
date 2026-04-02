@@ -7,11 +7,11 @@ import { AuthManager } from './auth.js';
     let currentGameState = null;
     let selectedCards = [];
     let isAnimating = false;
+    let authChecked = false;
 
     function init() {
         initManagers();
         bindEvents();
-        checkAuth();
     }
 
     function initManagers() {
@@ -53,9 +53,43 @@ import { AuthManager } from './auth.js';
         const passwordInput = document.getElementById('password-input');
         usernameInput.addEventListener('keypress', e => e.key === 'Enter' && handleLogin());
         passwordInput.addEventListener('keypress', e => e.key === 'Enter' && handleLogin());
+
+        document.addEventListener('click', () => audio.requireInteraction(), { once: true });
+        document.addEventListener('touchstart', () => audio.requireInteraction(), { once: true });
+
+        const startOverlay = document.getElementById('start-overlay');
+        if (startOverlay) {
+            startOverlay.addEventListener('click', handleStartClick);
+            startOverlay.addEventListener('touchstart', handleStartClick);
+        }
+    }
+
+    function handleStartClick() {
+        if (authChecked) return;
+        authChecked = true;
+
+        const startOverlay = document.getElementById('start-overlay');
+        if (startOverlay) {
+            startOverlay.classList.add('hidden');
+        }
+        audio.requireInteraction();
+        setTimeout(() => {
+            if (auth.isLoggedIn()) {
+                loadUserDataAndShowHome();
+            } else {
+                const guestData = localStorage.getItem('doudizhu_guest_data');
+                if (guestData) {
+                    handleGuest();
+                } else {
+                    showScreen('auth');
+                }
+            }
+        }, 500);
     }
 
     function checkAuth() {
+        if (authChecked) return;
+        authChecked = true;
         setTimeout(() => {
             if (auth.isLoggedIn()) {
                 loadUserDataAndShowHome();
