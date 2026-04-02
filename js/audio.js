@@ -65,21 +65,16 @@ class AudioManager {
 
         this.stopBgm();
 
-        const cdnBase = 'https://cdn.jsdelivr.net/gh/prodong9527/doudizhu-family@main';
-
         if (type === 'game') {
-            this.bgmPlaylist = [
-                `${cdnBase}/局内bgm1.mp3`,
-                `${cdnBase}/局内bgm2.mp3`
-            ];
+            this.bgmPlaylist = ['局内bgm1.mp3', '局内bgm2.mp3'];
             this.bgmIndex = 0;
             this.playNextBgm();
         } else {
             let src = '';
             if (type === 'login') {
-                src = `${cdnBase}/登录界面bgm.mp3`;
+                src = '登录界面bgm.mp3';
             } else if (type === 'hall') {
-                src = `${cdnBase}/大厅界面bgm.mp3`;
+                src = '大厅界面bgm.mp3';
             }
 
             if (!src) return;
