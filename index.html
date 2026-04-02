@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>斗地主 · 家庭版测试服</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♠</text></svg>">
+</head>
+<body>
+    <div id="app">
+        <!-- 加载界面 -->
+        <div id="loading-screen" class="screen active">
+            <div class="loading-content">
+                <div class="loading-logo">♠ ♥ ♦ ♣</div>
+                <div class="loading-text">斗地主 · 家庭版测试服</div>
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+
+        <!-- 登录/注册页面 -->
+        <div id="auth-screen" class="screen">
+            <div class="auth-container">
+                <div class="auth-header">
+                    <div class="auth-title">斗地主</div>
+                    <div class="auth-subtitle">家庭版测试服</div>
+                </div>
+                <div class="auth-form">
+                    <div class="input-group">
+                        <input type="text" id="username-input" placeholder="用户名" maxlength="20">
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="password-input" placeholder="密码" maxlength="20">
+                    </div>
+                    <div class="auth-buttons">
+                        <button id="login-btn" class="btn btn-primary">登录</button>
+                        <button id="register-btn" class="btn btn-secondary">注册账号</button>
+                    </div>
+                    <div class="auth-divider"><span>或者</span></div>
+                    <button id="guest-btn" class="btn btn-guest">游客试玩</button>
+                </div>
+                <div class="auth-tip">注册账号可永久保存数据</div>
+                <div class="guest-warning">游客数据仅本地存储，重启后丢失</div>
+            </div>
+        </div>
+
+        <!-- 主页面 -->
+        <div id="home-screen" class="screen">
+            <header class="home-header">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="8" r="4"/>
+                            <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
+                        </svg>
+                    </div>
+                    <div class="user-details">
+                        <div id="home-username" class="user-name"></div>
+                        <div id="home-rank-display" class="user-rank"></div>
+                    </div>
+                </div>
+                <div class="user-stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="home-points">0</span>
+                        <span class="stat-label">积分</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="home-stars">0</span>
+                        <span class="stat-label">星星</span>
+                    </div>
+                </div>
+            </header>
+
+            <main class="home-main">
+                <div class="rank-card" id="rank-card">
+                    <div class="rank-badge" id="current-rank-badge"></div>
+                    <div class="rank-info">
+                        <div id="current-rank-name" class="rank-name"></div>
+                        <div id="current-rank-tier" class="rank-tier"></div>
+                    </div>
+                    <div class="rank-stars" id="rank-stars-display"></div>
+                    <div class="rank-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="rank-progress-fill"></div>
+                        </div>
+                        <div class="progress-text" id="rank-progress-text"></div>
+                    </div>
+                </div>
+
+                <div class="quick-stats">
+                    <div class="quick-stat">
+                        <span class="qs-value" id="total-games">0</span>
+                        <span class="qs-label">总场次</span>
+                    </div>
+                    <div class="quick-stat">
+                        <span class="qs-value" id="win-rate">0%</span>
+                        <span class="qs-label">胜率</span>
+                    </div>
+                    <div class="quick-stat">
+                        <span class="qs-value" id="perfect-wins">0</span>
+                        <span class="qs-label">完胜</span>
+                    </div>
+                </div>
+            </main>
+
+            <nav class="home-nav">
+                <button class="nav-btn active" data-page="home">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        <polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                    <span>主页</span>
+                </button>
+                <button class="nav-btn" data-page="match">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                    </svg>
+                    <span>匹配</span>
+                </button>
+                <button class="nav-btn" data-page="shop">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                        <line x1="3" y1="6" x2="21" y2="6"/>
+                        <path d="M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
+                    <span>商店</span>
+                </button>
+                <button class="nav-btn" data-page="profile">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="10"/>
+                        <circle cx="12" cy="10" r="3"/>
+                        <path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/>
+                    </svg>
+                    <span>我的</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- 匹配页面 -->
+        <div id="match-screen" class="screen">
+            <header class="match-header">
+                <button class="back-btn" data-page="home">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <h2>排位赛匹配</h2>
+            </header>
+            <main class="match-main">
+                <div class="current-rank-display">
+                    <div class="crd-label">当前段位</div>
+                    <div class="crd-value" id="match-current-rank"></div>
+                </div>
+                <div class="match-area">
+                    <div class="match-card">
+                        <div class="match-mode">单排</div>
+                        <div class="match-enemies">
+                            <div class="enemy-avatar">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="12" cy="8" r="4"/>
+                                    <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
+                                </svg>
+                            </div>
+                            <div class="enemy-avatar">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <circle cx="12" cy="8" r="4"/>
+                                    <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="match-label">对手</div>
+                    </div>
+                    <div class="vs-text">VS</div>
+                    <div class="player-card">
+                        <div class="player-avatar">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="8" r="4"/>
+                                <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
+                            </svg>
+                        </div>
+                        <div class="match-label">你</div>
+                    </div>
+                </div>
+                <button id="start-match-btn" class="btn btn-match">开始匹配</button>
+            </main>
+        </div>
+
+        <!-- 游戏页面 -->
+        <div id="game-screen" class="screen">
+            <header class="game-header">
+                <div class="game-info">
+                    <span id="game-round">第 1 轮</span>
+                    <span id="game-status">等待叫地主</span>
+                </div>
+                <button id="game-quit-btn" class="btn-quit">认输</button>
+            </header>
+
+            <div class="game-opponents">
+                <div class="opponent opponent-left">
+                    <div class="opponent-avatar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="8" r="4"/>
+                            <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
+                        </svg>
+                    </div>
+                    <div class="opponent-info">
+                        <div class="opponent-name">AI - 左</div>
+                        <div class="opponent-cards-count" id="left-cards-count">17</div>
+                    </div>
+                </div>
+                <div class="opponent opponent-right">
+                    <div class="opponent-avatar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="8" r="4"/>
+                            <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
+                        </svg>
+                    </div>
+                    <div class="opponent-info">
+                        <div class="opponent-name">AI - 右</div>
+                        <div class="opponent-cards-count" id="right-cards-count">17</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ai-plays-display">
+                <div class="ai-play-area" id="left-ai-play">
+                    <div class="ai-play-cards" id="left-last-play"></div>
+                </div>
+                <div class="ai-play-area" id="right-ai-play">
+                    <div class="ai-play-cards" id="right-last-play"></div>
+                </div>
+            </div>
+
+            <div class="game-table">
+                <div class="landlord-cards" id="landlord-cards">
+                    <span class="landlord-label">底牌</span>
+                    <div class="landlord-cards-display" id="landlord-cards-display"></div>
+                </div>
+                <div class="table-cards" id="table-cards"></div>
+            </div>
+
+            <div class="game-controls">
+                <div class="turn-indicator" id="turn-indicator">等待中...</div>
+                <div class="player-area">
+                    <div class="player-info">
+                        <div class="player-cards-count" id="player-cards-count">17</div>
+                    </div>
+                    <div class="play-buttons">
+                        <button id="pass-btn" class="btn btn-pass" disabled>不出</button>
+                        <button id="play-btn" class="btn btn-play" disabled>出牌</button>
+                        <button id="hint-btn" class="btn btn-hint">提示</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="player-hand" id="player-hand"></div>
+
+            <!-- 叫地主阶段 -->
+            <div class="call-landlord-overlay" id="call-landlord-overlay">
+                <div class="call-dialog">
+                    <div class="call-title">请叫地主</div>
+                    <div class="call-cards">
+                        <div class="call-card" id="call-card-0"></div>
+                        <div class="call-card" id="call-card-1"></div>
+                        <div class="call-card" id="call-card-2"></div>
+                    </div>
+                    <div class="call-buttons">
+                        <button id="call-no-btn" class="btn btn-call">不叫</button>
+                        <button id="call-yes-btn" class="btn btn-call btn-call-yes">叫地主</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结算页面 -->
+        <div id="result-screen" class="screen">
+            <div class="result-content">
+                <div class="result-icon" id="result-icon"></div>
+                <div class="result-title" id="result-title"></div>
+                <div class="result-details" id="result-details"></div>
+                <div class="result-rewards">
+                    <div class="reward-item" id="reward-stars">
+                        <span class="reward-icon">★</span>
+                        <span class="reward-value" id="reward-stars-value">+0</span>
+                        <span class="reward-label">星星</span>
+                    </div>
+                    <div class="reward-item" id="reward-points">
+                        <span class="reward-icon">●</span>
+                        <span class="reward-value" id="reward-points-value">+0</span>
+                        <span class="reward-label">积分</span>
+                    </div>
+                </div>
+                <div class="result-stats">
+                    <div class="result-stat">
+                        <span id="result-ai-left">0</span>
+                        <span class="result-stat-label">左AI剩余</span>
+                    </div>
+                    <div class="result-stat">
+                        <span id="result-ai-right">0</span>
+                        <span class="result-stat-label">右AI剩余</span>
+                    </div>
+                </div>
+                <button id="result-continue-btn" class="btn btn-primary">继续</button>
+            </div>
+        </div>
+
+        <!-- 商店页面 -->
+        <div id="shop-screen" class="screen">
+            <header class="shop-header">
+                <button class="back-btn" data-page="home">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <h2>皮肤商店</h2>
+                <div class="shop-balance">
+                    <span class="balance-icon">●</span>
+                    <span id="shop-points">0</span>
+                </div>
+            </header>
+            <main class="shop-main">
+                <div class="shop-section">
+                    <h3>牌背皮肤</h3>
+                    <div class="shop-grid" id="shop-grid"></div>
+                </div>
+            </main>
+        </div>
+
+        <!-- 个人中心页面 -->
+        <div id="profile-screen" class="screen">
+            <header class="profile-header">
+                <button class="back-btn" data-page="home">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <h2>个人中心</h2>
+            </header>
+            <main class="profile-main">
+                <div class="profile-card">
+                    <div class="profile-avatar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="8" r="4"/>
+                            <path d="M4 20c0-4 4-6 8-6s8 2 8 6"/>
+                        </svg>
+                    </div>
+                    <div class="profile-name" id="profile-username"></div>
+                    <div class="profile-rank" id="profile-rank"></div>
+                </div>
+
+                <div class="profile-stats-section">
+                    <h3>对局统计</h3>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <span class="stat-box-value" id="profile-total-games">0</span>
+                            <span class="stat-box-label">总场次</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-box-value" id="profile-wins">0</span>
+                            <span class="stat-box-label">胜利</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-box-value" id="profile-losses">0</span>
+                            <span class="stat-box-label">失败</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-box-value" id="profile-perfect">0</span>
+                            <span class="stat-box-label">完胜</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rank-history-section">
+                    <h3>段位历程</h3>
+                    <div class="rank-progress-list" id="rank-progress-list"></div>
+                </div>
+
+                <button id="logout-btn" class="btn btn-logout">退出登录</button>
+            </main>
+        </div>
+
+        <!-- 段位晋升弹窗 -->
+        <div class="promotion-overlay" id="promotion-overlay">
+            <div class="promotion-content">
+                <div class="promotion-stars"></div>
+                <div class="promotion-title">段位晋升</div>
+                <div class="promotion-from" id="promotion-from"></div>
+                <div class="promotion-arrow">↓</div>
+                <div class="promotion-to" id="promotion-to"></div>
+                <button id="promotion-close-btn" class="btn btn-primary">恭喜</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="sound-toggle" id="sound-toggle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+        </svg>
+    </div>
+
+    <script type="module" src="js/firebase.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/ai.js"></script>
+    <script src="js/rank.js"></script>
+    <script src="js/store.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
